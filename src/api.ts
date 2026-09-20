@@ -78,6 +78,15 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 const post = <T>(path: string, body?: unknown) =>
   request<T>(path, { method: 'POST', body: body === undefined ? undefined : JSON.stringify(body) })
 
+const del = (path: string) => request<void>(path, { method: 'DELETE' })
+
+export interface BookInput {
+  title: string
+  author: string
+  isbn: string
+  totalCopies: number
+}
+
 export const api = {
   login: (email: string, password: string) => post<AuthResponse>('/api/auth/login', { email, password }),
 
@@ -104,4 +113,14 @@ export const api = {
     request<Paged<Loan>>(`/api/loans/active?page=${page}&pageSize=${pageSize}`),
 
   returnLoan: (loanId: number) => post<Loan>(`/api/loans/${loanId}/return`),
+
+  // Admin only.
+  createBook: (b: BookInput) => post<Book>('/api/books', { ...b, categoryIds: [] }),
+
+  deleteBook: (id: number) => del(`/api/books/${id}`),
+
+  listMembers: (page: number, pageSize: number) =>
+    request<Paged<Member>>(`/api/members?page=${page}&pageSize=${pageSize}`),
+
+  deleteMember: (id: number) => del(`/api/members/${id}`),
 }

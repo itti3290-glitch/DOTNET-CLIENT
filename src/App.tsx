@@ -3,6 +3,7 @@ import { setToken, setUnauthorizedHandler } from './api'
 import { AuthPage } from './components/AuthPage'
 import { BooksPage } from './components/BooksPage'
 import { LoansPage } from './components/LoansPage'
+import { MembersPage } from './components/MembersPage'
 import { clearSession, loadSession, saveSession, type Session } from './session'
 import type { AuthResponse } from './types'
 
@@ -15,7 +16,7 @@ function initialSession(): Session | null {
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(initialSession)
-  const [tab, setTab] = useState<'books' | 'loans'>('books')
+  const [tab, setTab] = useState<'books' | 'loans' | 'members'>('books')
   const [expired, setExpired] = useState(false)
 
   const logout = useCallback(() => {
@@ -62,6 +63,11 @@ export default function App() {
           <button className={tab === 'loans' ? 'active' : ''} onClick={() => setTab('loans')}>
             {me.role === 'Admin' ? 'Active loans' : 'My loans'}
           </button>
+          {me.role === 'Admin' && (
+            <button className={tab === 'members' ? 'active' : ''} onClick={() => setTab('members')}>
+              Members
+            </button>
+          )}
         </nav>
         <div className="who">
           {me.fullName} <span className="pill">{me.role}</span>
@@ -71,7 +77,13 @@ export default function App() {
         </div>
       </header>
 
-      {tab === 'books' ? <BooksPage me={me} /> : <LoansPage me={me} />}
+      {tab === 'books' ? (
+        <BooksPage me={me} />
+      ) : tab === 'members' && me.role === 'Admin' ? (
+        <MembersPage me={me} />
+      ) : (
+        <LoansPage me={me} />
+      )}
     </div>
   )
 }
