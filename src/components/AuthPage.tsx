@@ -69,8 +69,7 @@ export function AuthPage({ onLoggedIn }: { onLoggedIn: (auth: AuthResponse) => v
 
       {mode === 'login' && (
         <p className="muted">
-          Demo: <code>dana@library.local</code> / <code>Member123!</code> or <code>admin@library.local</code> /{' '}
-          <code>Admin123!</code>
+          Demo: <code>admin@library.local</code> / <code>Admin123!</code>
         </p>
       )}
     </main>
